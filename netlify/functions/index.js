@@ -1,23 +1,40 @@
 export default async (request) => {
-  // Forward the Range header if present
-  const headers = {};
-  if (request.headers.get('range')) {
-    headers['range'] = request.headers.get('range');
+  const range = request.headers.get('range');
+  const videoUrl = 'https://portfolio-wyceghiacy.netlify.app/video_preview.mp4';
+
+  // Fetch the whole file as ArrayBuffer (not efficient for large files)
+  const videoResponse = await fetch(videoUrl);
+  const buffer = await videoResponse.arrayBuffer();
+  const videoLength = buffer.byteLength;
+
+  if (range) {
+    const matches = /bytes=(\d+)-(\d*)/.exec(range);
+    const start = Number(matches[1]);
+    const end = matches[2] ? Number(matches[2]) : videoLength - 1;
+    const chunk = buffer.slice(start, end + 1);
+
+    return new Response(chunk, {
+      status: 206,
+      headers: {
+        "Content-Range": `bytes ${start}-${end}/${videoLength}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunk.byteLength,
+        "Content-Type": "video/mp4",
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
   }
 
-  const videoResponse = await fetch(
-    'https://portfolio-wyceghiacy.netlify.app/video_preview.mp4',
-    { headers }
-  );
+  // No range header, send the whole file
+  return new Response(buffer, {
+    status: 200,
+    headers: {
+      "Content-Length": videoLength,
+      "Content-Type": "video/mp4",
+      "Accept-Ranges": "bytes",
+      "Access-Control-Allow-Origin": "*"
+    }
 
-  // Copy all headers from the upstream response
-  const responseHeaders = new Headers(videoResponse.headers);
-  responseHeaders.set("content-type", "video/mp4");
-  responseHeaders.set("Access-Control-Allow-Origin", "*");
-
-  return new Response(videoResponse.body, {
-    status: videoResponse.status,
-    statusText: videoResponse.statusText,
-    headers: responseHeaders
+    curl -I -H "Range: bytes=0-1" https://portfolio-wyceghiacy.netlify.app/video_preview.mp4
   });
 };
