@@ -92,13 +92,11 @@
       padding: 0;
       background: white; /* Prevent blank space behind video */
     }
-    .video-container {
-      position: relative;
+    .video-container video {
       width: 100%;
-      height: auto; /* Full viewport height */
-      overflow: hidden;
+      height: auto;
+      object-fit: contain; /* Fit entire video inside without cropping */
       background: white;
-
     }
   </style>
 </head>
