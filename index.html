@@ -80,11 +80,41 @@
       <p>Created cover and interiors for a 380-page book, featuring chapter breaks and footnotes.</p>
     </div>
     <div class="project">
-<video width="320" height="240" controls>
-  <source src="video_preview.mp4" type="video/mp4">
-  <source src="video_preview.ogv" type="video/ogv">
-  Your browser does not support the video tag.
-</video>
+
+     
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Responsive Contain Autoplay Video</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Prevent blank space behind video */
+    }
+    .video-container {
+      position: relative;
+      width: 100%;
+      height: 100vh; /* Full viewport height */
+      overflow: hidden;
+      background: black;
+    }
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Fit entire video inside without cropping */
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video autoplay muted loop playsinline poster="fallback-image.jpg">
+      <source src="video_preview.mp4" type="video/mp4">
+      <source src="video_preview.ogv" type="video/ogg">
+      <img src="fallback-image.jpg" alt="Your browser does not support the video.">
+    </video>
+  </div>
       
   <img src="https://pub-65ba328524bc4fc1a1ff402dd2e64d63.r2.dev/video_preview.mp4" alt="Social Media Videos: GlobaLee Magazine" />
   <h2> GlobaLee Magazine </h2>
